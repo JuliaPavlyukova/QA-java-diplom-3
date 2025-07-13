@@ -2,6 +2,9 @@
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+/src/test/resources/chromedriver.exe
+/src/test/resources/yandexdriver.exe
+
 ### IntelliJ IDEA ###
 .idea/**
 *.iws
