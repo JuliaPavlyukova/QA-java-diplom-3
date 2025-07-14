@@ -49,7 +49,7 @@ public class RegisterUserTest extends BaseTest {
     @DisplayName("Пароль короче 6 символов")
     @Description("Ошибка при регистрации с паролем короче 6 символов")
     public void userNotRegisterWithShortPasswordTest() {
-        registerPage.register(user.getName(), user.getEmail(), "12345");
+        registerPage.register(user.getName(), user.getEmail(), faker.internet().password(5, 5));
         assertTrue(driver.getPageSource().contains("Некорректный пароль"));
     }
 }
