@@ -1,0 +1,6 @@
+LoginPage.class
+helper\BrowserType.class
+MainPage.class
+ProfilePage.class
+RegisterPage.class
+UserApi.class
