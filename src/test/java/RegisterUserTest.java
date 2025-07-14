@@ -16,7 +16,6 @@ public class RegisterUserTest extends BaseTest {
     private final UserApi userApi = new UserApi();
     Faker faker = new Faker();
     private User user;
-    private final String password = "111356";
     private boolean userWasCreated = false;
 
     @Before
@@ -25,7 +24,7 @@ public class RegisterUserTest extends BaseTest {
         pageHelpers = new PageHelpers(driver);
         loginPage = new LoginPage(driver);
         registerPage.open();
-        user = new User(faker.internet().emailAddress(), password, faker.name().firstName());
+        user = new User(faker.internet().emailAddress(), faker.internet().password(6, 6), faker.name().firstName());
     }
 
     @After
@@ -39,7 +38,7 @@ public class RegisterUserTest extends BaseTest {
     @DisplayName("Успешная регистрация")
     @Description("Проверка успешной регистрации пользователя с валидными данными")
     public void userCanRegisterSuccessfullyTest() {
-        registerPage.register(user.getName(), user.getEmail(), password);
+        registerPage.register(user.getName(), user.getEmail(), user.getPassword());
         pageHelpers.waitForElement(loginPage.getLoginHeader());
         userWasCreated = true;
         // проверяем наличие текста заголовка 'Вход'

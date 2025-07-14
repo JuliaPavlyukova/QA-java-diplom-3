@@ -23,8 +23,7 @@ public class PersonalAccountTest extends BaseTest {
 
     @Before
     public void setUpPage() {
-        String password = "142563";
-        user = new User(faker.internet().emailAddress(), password, faker.name().firstName());
+        user = new User(faker.internet().emailAddress(), faker.internet().password(6, 6), faker.name().firstName());
         userApi.createUser(user);
         mainPage = new MainPage(driver);
         LoginPage loginPage = new LoginPage(driver);

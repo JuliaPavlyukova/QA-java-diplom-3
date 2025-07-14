@@ -9,9 +9,9 @@ import pojo.User;
 
 import static org.junit.Assert.assertTrue;
 
-public class ConstructorTest  extends BaseTest {
+public class ConstructorTest extends BaseTest {
     Faker faker = new Faker();
-    private final User user = new User(faker.internet().emailAddress(), "123456", faker.name().firstName());
+    private final User user = new User(faker.internet().emailAddress(), faker.internet().password(6, 6), faker.name().firstName());
     private final UserApi apiHelper = new UserApi();
     private MainPage mainPage;
     private ProfilePage profilePage;
@@ -29,7 +29,9 @@ public class ConstructorTest  extends BaseTest {
     }
 
     @After
-    public void deleteUser() { apiHelper.deleteUser(user); }
+    public void deleteUser() {
+        apiHelper.deleteUser(user);
+    }
 
     @Test
     @DisplayName("Перехода в конструктор по кнопке 'Конструктор'")

@@ -25,7 +25,7 @@ public class LoginTest extends BaseTest {
 
     @Before
     public void setUpPage() {
-        user = new User(faker.internet().emailAddress(), "123456", faker.name().firstName());
+        user = new User(faker.internet().emailAddress(), faker.internet().password(6, 6), faker.name().firstName());
         apiHelper.createUser(user);
         mainPage = new MainPage(driver);
         loginPage = new LoginPage(driver);
