@@ -1,37 +1,37 @@
-import browser.Base;
+import api.UserApi;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import net.datafaker.Faker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
+import pojo.User;
+
 import static org.junit.Assert.assertTrue;
 
-public class RegisterUserTest extends Base {
+public class RegisterUserTest extends BaseTest {
     private RegisterPage registerPage;
     private LoginPage loginPage;
+    private PageHelpers pageHelpers;
     private final UserApi userApi = new UserApi();
     Faker faker = new Faker();
-    private final String email = faker.internet().emailAddress();
-    private final String name = faker.name().firstName();
+    private User user;
     private final String password = "111356";
     private boolean userWasCreated = false;
 
     @Before
     public void setUpPage() {
         registerPage = new RegisterPage(driver);
+        pageHelpers = new PageHelpers(driver);
         loginPage = new LoginPage(driver);
         registerPage.open();
+        user = new User(faker.internet().emailAddress(), password, faker.name().firstName());
     }
 
     @After
     public void deleteUser() {
         if (userWasCreated) {
-            userApi.deleteUser(email, password);
-            System.out.println("удалили "+ email +" " + password);
+            userApi.deleteUser(user);
         }
     }
 
@@ -39,9 +39,8 @@ public class RegisterUserTest extends Base {
     @DisplayName("Успешная регистрация")
     @Description("Проверка успешной регистрации пользователя с валидными данными")
     public void userCanRegisterSuccessfullyTest() {
-        registerPage.register(name, email, password);
-        new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOfElementLocated(loginPage.getLoginHeader()));
+        registerPage.register(user.getName(), user.getEmail(), password);
+        pageHelpers.waitForElement(loginPage.getLoginHeader());
         userWasCreated = true;
         // проверяем наличие текста заголовка 'Вход'
         assertTrue(driver.findElement(loginPage.getLoginHeader()).isDisplayed());
@@ -51,7 +50,7 @@ public class RegisterUserTest extends Base {
     @DisplayName("Пароль короче 6 символов")
     @Description("Ошибка при регистрации с паролем короче 6 символов")
     public void userNotRegisterWithShortPasswordTest() {
-        registerPage.register(name, email, "12345");
+        registerPage.register(user.getName(), user.getEmail(), "12345");
         assertTrue(driver.getPageSource().contains("Некорректный пароль"));
     }
 }

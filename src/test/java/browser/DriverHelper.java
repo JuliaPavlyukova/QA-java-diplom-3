@@ -1,8 +1,10 @@
 package browser;
+
 import helper.BrowserType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -15,8 +17,8 @@ public class DriverHelper {
         Properties properties = new Properties();
         properties.load(new FileInputStream("src/test/resources/browser.properties"));
         String browserProperty = properties.getProperty("testBrowser");
-        BrowserType browserType =  BrowserType.valueOf(browserProperty);
-        switch (browserType){
+        BrowserType browserType = BrowserType.valueOf(browserProperty);
+        switch (browserType) {
             case CHROME:
                 driver = new ChromeDriver();
                 break;

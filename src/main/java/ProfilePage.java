@@ -1,12 +1,10 @@
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
 
 public class ProfilePage {
     private final WebDriver driver;
+    private final PageHelpers pageHelpers;
 
     // Локаторы
     private final By logoutButton = By.xpath("//button[text()='Выход']");
@@ -15,15 +13,8 @@ public class ProfilePage {
 
     public ProfilePage(WebDriver driver) {
         this.driver = driver;
+        pageHelpers = new PageHelpers(driver);
     }
-
-//    // Нажать кнопку 'Выйти'
-//    public void clickLogoutButton() {
-//        // ****************************
-//        new WebDriverWait(driver, Duration.ofSeconds(5))
-//                .until(ExpectedConditions.visibilityOfElementLocated(logoutButton));
-//        driver.findElement(logoutButton).click();
-//    }
 
     @Step("Нажать кнопку 'Конструктор'")
     public void clickConstructorButton() {
@@ -37,8 +28,7 @@ public class ProfilePage {
 
     @Step("Наличие кнопки 'Выход'")
     public boolean isLogoutButtonVisible() {
-        new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOfElementLocated(logoutButton));
+        pageHelpers.waitForElement(logoutButton);
         return driver.findElement(logoutButton).isDisplayed();
     }
 }

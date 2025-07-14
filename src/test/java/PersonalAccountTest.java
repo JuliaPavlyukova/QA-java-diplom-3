@@ -1,10 +1,12 @@
-import browser.Base;
+import api.UserApi;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import net.datafaker.Faker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import pojo.User;
+
 import static org.junit.Assert.assertTrue;
 
 /* Регистрация
@@ -12,31 +14,30 @@ import static org.junit.Assert.assertTrue;
 Успешную регистрацию.
 Ошибку для некорректного пароля. Минимальный пароль — шесть символов.*/
 
-public class PersonalAccountTest extends Base {
+public class PersonalAccountTest extends BaseTest {
     Faker faker = new Faker();
-    private final String email = faker.internet().emailAddress();
-    private final String name = faker.name().firstName();
-    private final String password = "123456";
     private final UserApi userApi = new UserApi();
     private MainPage mainPage;
-    private LoginPage loginPage;
     private ProfilePage profilePage;
+    private User user;
 
     @Before
     public void setUpPage() {
-        userApi.createUser(email, password, name);
+        String password = "142563";
+        user = new User(faker.internet().emailAddress(), password, faker.name().firstName());
+        userApi.createUser(user);
         mainPage = new MainPage(driver);
-        loginPage = new LoginPage(driver);
+        LoginPage loginPage = new LoginPage(driver);
         profilePage = new ProfilePage(driver);
         // Вход
         mainPage.open();
         mainPage.clickLoginButton();
-        loginPage.login(email, password);
+        loginPage.login(user.getEmail(), user.getPassword());
     }
 
     @After
     public void deleteUser() {
-        userApi.deleteUser(email, password);
+        userApi.deleteUser(user);
     }
 
     @Test

@@ -1,14 +1,12 @@
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
 
 public class MainPage {
     //    вход по кнопке «Войти в аккаунт» на главной;
     //    вход через кнопку «Личный кабинет»;
     private final WebDriver driver;
+    private final PageHelpers pageHelpers;
 
     private static final String URL = "https://stellarburgers.nomoreparties.site";
 
@@ -23,6 +21,7 @@ public class MainPage {
 
     public MainPage(WebDriver driver) {
         this.driver = driver;
+        pageHelpers = new PageHelpers(driver);
     }
 
     @Step("Открыть главную страницу")
@@ -42,8 +41,7 @@ public class MainPage {
 
     @Step("Проверка: отображается кнопка 'Оформить заказ'")
     public boolean isOrderButtonVisible() {
-        new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOfElementLocated(orderButton));
+        pageHelpers.waitForElement(orderButton);
         return driver.findElement(orderButton).isDisplayed();
     }
 

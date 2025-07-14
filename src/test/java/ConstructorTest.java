@@ -1,39 +1,35 @@
-import browser.Base;
+import api.UserApi;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import net.datafaker.Faker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import pojo.User;
+
 import static org.junit.Assert.assertTrue;
 
-public class ConstructorTest  extends Base {
+public class ConstructorTest  extends BaseTest {
     Faker faker = new Faker();
-    private final String email = faker.internet().emailAddress();
-    private final String name = faker.name().firstName();
-    private final String password = "123456";
+    private final User user = new User(faker.internet().emailAddress(), "123456", faker.name().firstName());
     private final UserApi apiHelper = new UserApi();
     private MainPage mainPage;
-    private LoginPage loginPage;
     private ProfilePage profilePage;
 
     @Before
     public void setUpPage() {
-        apiHelper.createUser(email, password, name);
+        apiHelper.createUser(user);
         mainPage = new MainPage(driver);
-        loginPage = new LoginPage(driver);
         profilePage = new ProfilePage(driver);
-
         mainPage.open();
         mainPage.clickLoginButton();
-        loginPage.login(email, password);
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login(user.getEmail(), user.getPassword());
         mainPage.clickPersonalAccount(); // переходим в профиль
     }
 
     @After
-    public void deleteUser() {
-        apiHelper.deleteUser(email, password);
-    }
+    public void deleteUser() { apiHelper.deleteUser(user); }
 
     @Test
     @DisplayName("Перехода в конструктор по кнопке 'Конструктор'")

@@ -1,10 +1,12 @@
-import browser.Base;
+import api.UserApi;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import net.datafaker.Faker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import pojo.User;
+
 import static org.junit.Assert.assertTrue;
 
 /* Вход
@@ -14,25 +16,24 @@ import static org.junit.Assert.assertTrue;
 вход через кнопку в форме регистрации,
 вход через кнопку в форме восстановления пароля.*/
 
-public class LoginTest extends Base {
+public class LoginTest extends BaseTest {
     private final UserApi apiHelper = new UserApi();
     private MainPage mainPage;
     private LoginPage loginPage;
     Faker faker = new Faker();
-    private final String email = faker.internet().emailAddress();
-    private final String name = faker.name().firstName();
-    private final String password = "123456";
+    private User user;
 
     @Before
     public void setUpPage() {
-        apiHelper.createUser(email, password, name);
+        user = new User(faker.internet().emailAddress(), "123456", faker.name().firstName());
+        apiHelper.createUser(user);
         mainPage = new MainPage(driver);
         loginPage = new LoginPage(driver);
     }
 
     @After
     public void deleteUser() {
-        apiHelper.deleteUser(email, password);
+        apiHelper.deleteUser(user);
     }
 
     @Test
@@ -41,7 +42,7 @@ public class LoginTest extends Base {
     public void loginFromMainPageTest() {
         mainPage.open();
         mainPage.clickLoginButton();
-        loginPage.login(email, password);
+        loginPage.login(user.getEmail(), user.getPassword());
         assertTrue(mainPage.isOrderButtonVisible());
     }
 
@@ -51,7 +52,7 @@ public class LoginTest extends Base {
     public void loginFromPersonalAccountTest() {
         mainPage.open();
         mainPage.clickPersonalAccount();
-        loginPage.login(email, password);
+        loginPage.login(user.getEmail(), user.getPassword());
         assertTrue(mainPage.isOrderButtonVisible());
     }
 
@@ -62,19 +63,19 @@ public class LoginTest extends Base {
         RegisterPage registerPage = new RegisterPage(driver);
         registerPage.open();
         registerPage.clickLoginLink();
-        loginPage.login(email, password);
+        loginPage.login(user.getEmail(), user.getPassword());
         assertTrue(mainPage.isOrderButtonVisible());
     }
 
     @Test
     @DisplayName("Восстановления пароля")
     @Description("Вход по ссылке из формы восстановления пароля")
-    public void loginFromForgotPasswordTest() throws InterruptedException {
+    public void loginFromForgotPasswordTest() {
         mainPage.open();
         mainPage.clickLoginButton();
         loginPage.openForgotPasswordPage();
         loginPage.clickLoginFromForgotPassword();
-        loginPage.login(email, password);
+        loginPage.login(user.getEmail(), user.getPassword());
         assertTrue(mainPage.isOrderButtonVisible());
     }
 }
